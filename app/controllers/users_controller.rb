@@ -31,6 +31,8 @@ class UsersController < ApplicationController
   end
 
   def update
+    User.find(session[:user_id]).update(user_params)
+    redirect_to '/timeline'
   end
 
   def destroy

@@ -8,6 +8,12 @@
     	.header{
     		display: inline-block;
     	}
+    	.profile_pic{
+    		height: 200px;
+    		width: 200px;
+    		border: solid black 2px;
+    		border-radius: 5px;
+    	}
     </style>
 </head>
 <body>
@@ -15,8 +21,7 @@
 	<%= render 'partials/navbar' %>
 	<div class='container'>
 		<div class='row'>
-			<div class='header' style='height: 200px; width: 200px; border: solid black 2px'>
-			</div>
+			<%= image_tag @user.profile_pic.url , class: "display profile_pic" %>
 			<h1 class='header'><%= @user.first_name %> <%= @user.last_name %></h1>
 		</div>
 		<div class='row'>

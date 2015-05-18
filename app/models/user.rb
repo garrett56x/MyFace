@@ -8,11 +8,15 @@ class User < ActiveRecord::Base
 
 	validates :first_name, :last_name, presence: true
 	validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: EMAIL_REGEX }
-	validates :password, presence: true, length: { minimum: 7 }, confirmation: true
-	validates :password_confirmation, presence: true
-	validates_attachment_content_type :profile_pic, :content_type => ["image/jpg", "image/jpeg", "image/png", "image/gif"]
+	validates :password, presence: true, length: { minimum: 7 }, confirmation: true,
+			  if: Proc.new { |a| a.encrypted_password.blank? }
+	validates :password_confirmation, presence: true,
+			  if: Proc.new { |a| a.encrypted_password.blank? }
+	validates_attachment_content_type :profile_pic,
+									  :content_type => ["image/jpg", "image/jpeg", "image/png", "image/gif"]
 
-	before_save :encrypt_password
+	before_save :encrypt_password,
+				if: Proc.new { |a| a.encrypted_password.blank? }
 
 	def has_password?(submitted_password)
 		self.encrypted_password == encrypt(submitted_password)

@@ -21,7 +21,6 @@
     		border-radius: 3px;
     		padding: 10px;
     		margin: 5px;
-    		text-align: right;
     	}
     	.post_status{
     		width: 100%;
@@ -32,6 +31,12 @@
     		height: 30px;
     		width: 100%;
     	}
+    	.profile_pic{
+    		height: 50px;
+    		width: 50px;
+    		border: solid black 1px;
+    		border-radius: 5px;
+    	}
     </style>
 </head>
 <body>
@@ -40,7 +45,14 @@
 	<div class='container'>
 		<div class='row'>
 			<div class='col-md-2'>
-				<h4><a href="/users/<%= @user.id %>"><%= @user.first_name %> <%= @user.last_name %></a></h4>
+				<div class='row'>
+					<div class='col-md-4'>
+						<%= image_tag @user.profile_pic.url , class: "display profile_pic" %>
+					</div>
+					<div class='col-md-8'>
+						<a href="/users/<%= @user.id %>"><%= @user.first_name %> <%= @user.last_name %></a>
+					</div>
+				</div>
 				<p>
 					Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
 					tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
@@ -63,7 +75,14 @@
 				</div>
 				<% @posts.each do |post| %>
 					<div class='middle_column'>
-						<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+						<div class='row'>
+							<div class='col-md-1' style='margin-right: 10px'>
+								<%= image_tag post.user.profile_pic.url , class: "display profile_pic" %>
+							</div>
+							<div class='col-md-8'>
+								<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+							</div>
+						</div>
 						<p><%= post.content %></p>
 					</div>
 				<% end %>
@@ -72,6 +91,7 @@
 				<h4>People You May Know:</h4>
 				<% @users.each do |user| %>
 					<p>
+						<%= image_tag user.profile_pic.url , class: "display profile_pic" %>
 						<a href="/users/<%= user.id %>"><%= user.first_name %> <%= user.last_name %></a> <button class='btn btn-primary btn-xs'>Add Friend</button>
 					</p>
 				<% end %>

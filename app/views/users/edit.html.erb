@@ -39,14 +39,17 @@
 	<%= render 'partials/navbar' %>
 	<div class='container'>
         <h1>Editing <%= @user.first_name %> <%= @user.last_name %></h1>
-        <form action='' method='post'>
+        <form action='/users/<%= @user.id %>' method='post' enctype='multipart/form-data'>
             <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+            <input type="hidden"name="_method"value="put">
             <label>First Name</label>
             <input type='text' name='user[first_name]' value='<%= @user.first_name %>'><br>
             <label>Last Name</label>
             <input type='text' name='user[last_name]' value='<%= @user.last_name %>'><br>
             <label>Email</label>
-            <input type='text' name='user[email]' value='<%= @user.email %>'><br><br>
+            <input type='text' name='user[email]' value='<%= @user.email %>'><br>
+            <label class='pull-left'>Profile Picture</label>
+            <input type='file' name='user[profile_pic]'><br><br>
             <input type='submit' value='Update' class='btn btn-primary'>
         </form>
     </div>
