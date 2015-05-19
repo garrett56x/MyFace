@@ -37,6 +37,9 @@
     		border: solid black 1px;
     		border-radius: 5px;
     	}
+    	.post_header{
+    		display: inline-block;
+    	}
     </style>
 </head>
 <body>
@@ -67,6 +70,7 @@
 				<div class='middle_column'>
 					<form action='/posts' method='post'>
 						<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+						<input type='hidden' name='location' value='timeline'>
 						<textarea class='post_status' rows='4' placeholder="What's on your mind?" name='status'></textarea>
 						<div class='post_button'>
 							<button class='btn btn-primary pull-right'>Post</button>
@@ -80,7 +84,11 @@
 								<%= image_tag post.user.profile_pic.url , class: "display user_pic" %>
 							</div>
 							<div class='col-md-8'>
-								<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+								<h4 class='post_header'><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+								<% if post.user.id != post.recipient 
+									postee = User.find(post.recipient) %>
+									<p class='post_header'>to <a href='/users/<%= postee.id %>'><%= postee.first_name %> <%= postee.last_name %></a></p>
+								<% end %>
 							</div>
 						</div>
 						<p><%= post.content %></p>
@@ -91,13 +99,25 @@
 				<h4>People You May Know:</h4>
 				<% @users.each do |user| %>
 					<p>
-						<form action='/invitations' method='post'>
-							<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
-							<input type='hidden' name='invitee' value='<%= user.id %>'>
-							<%= image_tag user.profile_pic.url , class: "display user_pic" %>
-							<a href="/users/<%= user.id %>"><%= user.first_name %> <%= user.last_name %></a>
-							<button class='btn btn-primary btn-xs'>Add Friend</button>
-						</form>
+						<% if Invitation.exists?(invitee: @user.id, user: user.id) %>
+							<form action='/friendships' method='post'>
+								<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+								<input type='hidden' name='invitor' value='<%= user.id %>'>
+								<input type='hidden' name='invitation_id' value='<%= Invitation.where(invitee: @user.id, user: user.id).first.id %>'>
+								<input type='hidden' name='location' value='timeline'>
+								<%= image_tag user.profile_pic.url , class: "display user_pic" %>
+								<a href="/users/<%= user.id %>"><%= user.first_name %> <%= user.last_name %></a>
+								<button class='btn btn-success btn-xs'>Accept Request</button>
+							</form>
+						<% else %>
+							<form action='/invitations' method='post'>
+								<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+								<input type='hidden' name='invitee' value='<%= user.id %>'>
+								<%= image_tag user.profile_pic.url , class: "display user_pic" %>
+								<a href="/users/<%= user.id %>"><%= user.first_name %> <%= user.last_name %></a>
+								<button class='btn btn-primary btn-xs'>Add Friend</button>
+							</form>
+						<% end %>
 					</p>
 				<% end %>
 			</div>

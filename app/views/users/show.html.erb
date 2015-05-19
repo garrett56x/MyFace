@@ -23,12 +23,21 @@
     		border: solid black 1px;
     		border-radius: 5px;
     	}
+    	div.left_column{
+    		background-color: white;
+    		border: solid silver 1px;
+    		border-radius: 3px;
+    		padding: 10px;
+    		margin: 5px;
+    		margin-left: 0px;
+    	}
     	div.right_column{
     		background-color: white;
     		border: solid silver 1px;
     		border-radius: 3px;
     		padding: 10px;
     		margin: 5px;
+    		margin-left: 0px;
     	}
     	.post_status{
     		width: 100%;
@@ -47,25 +56,34 @@
 	<div class='container'>
 
 		<div class='row'>
-			<%= image_tag @user.profile_pic.url , class: "display profile_pic" %>
-			<h1 class='header'><%= @user.first_name %> <%= @user.last_name %></h1>
+			<%= image_tag @friend.profile_pic.url , class: "display profile_pic" %>
+			<h1 class='header'><%= @friend.first_name %> <%= @friend.last_name %></h1>
 		</div>
 
-		<div class='col-md-4'>
-			<h3><%= @user.first_name %>'s Friends:</h3>
-			<% @friends.each do |friend| %>
-				<div class='row'>
-					<%= image_tag friend.profile_pic.url , class: "display user_pic" %>
-					<a href="/users/<%= friend.id %>"><%= friend.first_name %> <%= friend.last_name %></a>
-				</div>
-			<% end %>
+		<div class='col-md-3'>
+			<h3><%= @friend.first_name %>'s Friends:</h3>
+			<div class='left_column'>
+				<% @friends.each do |friend| %>
+					<p>
+						<%= image_tag friend.profile_pic.url , class: "display user_pic" %>
+						<a href="/users/<%= friend.id %>"><%= friend.first_name %> <%= friend.last_name %></a>
+					</p>
+				<% end %>
+			</div>
 		</div>
 
 		<div class='col-md-7'>
-			<h3>Update Status:</h3>
+			<% if @friend.id == @user.id %>
+				<h3>Update Status:</h3>
+			<% else %>
+				<h3>Write on <%= @friend.first_name %>'s Wall:</h3>
+			<% end %>
 			<div class='right_column'>
 				<form action='/posts' method='post'>
 					<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+					<input type='hidden' name='recipient' value='<%= @friend.id %>'>
+					<input type='hidden' name='location' value='profile'>
+					<input type='hidden' name='id' value='<%= @friend.id %>'>
 					<textarea class='post_status' rows='4' placeholder="What's on your mind?" name='status'></textarea>
 					<div class='post_button'>
 						<button class='btn btn-primary pull-right'>Post</button>
@@ -73,17 +91,19 @@
 				</form>
 			</div>
 			<% @posts.each do |post| %>
-				<div class='right_column'>
-					<div class='row'>
-						<div class='col-md-1' style='margin-right: 10px'>
-							<%= image_tag post.user.profile_pic.url , class: "display user_pic" %>
+				<% if @friend.id == post.recipient %>
+					<div class='right_column'>
+						<div class='row'>
+							<div class='col-md-1' style='margin-right: 10px'>
+								<%= image_tag post.user.profile_pic.url , class: "display user_pic" %>
+							</div>
+							<div class='col-md-8'>
+								<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+							</div>
 						</div>
-						<div class='col-md-8'>
-							<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
-						</div>
+						<p><%= post.content %></p>
 					</div>
-					<p><%= post.content %></p>
-				</div>
+				<% end %>
 			<% end %>
 		</div>
 	</div>

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150518234350) do
+ActiveRecord::Schema.define(version: 20150519184651) do
 
   create_table "friendships", force: true do |t|
     t.integer  "user_id"
@@ -37,6 +37,7 @@ ActiveRecord::Schema.define(version: 20150518234350) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "recipient"
   end
 
   add_index "posts", ["user_id"], name: "index_posts_on_user_id"

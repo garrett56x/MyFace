@@ -23,8 +23,22 @@ class UsersController < ApplicationController
   end
 
   def show
-    @user = User.find(params[:id])
-    @posts = Post.where(user: params[:id]).reverse
+    @user = User.find(session[:user_id])
+    @friend = User.find(params[:id])
+
+    @statuses = Post.where(user: params[:id])
+    @messages = Post.where(recipient: params[:id])
+    @allPosts = Array.new
+
+    @statuses.each do |status|
+      @allPosts.push(status.id)
+    end
+    @messages.each do |message|
+      @allPosts.push(message.id)
+    end
+
+    @posts = Post.where(id: @allPosts).order(created_at: :desc)
+
     @friends = User.find(params[:id]).friends
   end
 

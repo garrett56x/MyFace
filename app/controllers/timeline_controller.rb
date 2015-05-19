@@ -18,7 +18,14 @@ class TimelineController < ApplicationController
 
     @users = User.where('id not in (?)', @subtractor)
 
-    @posts = Post.all.reverse
+    # List of which posts to display (user, user's friends)
+    @adder = Array.new
+    @adder.push(session[:user_id])
+    @friends.each do |friend|
+      @adder.push(friend.id)
+    end
+
+    @posts = Post.where(user: @adder).order(created_at: :desc)
   end
 
   def new
