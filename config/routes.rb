@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :users, :sessions, :timeline, :posts
+  resources :users, :sessions, :timeline, :posts, :invitations, :friendships
+  get '/requests' => 'invitations#requests'
   root 'users#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

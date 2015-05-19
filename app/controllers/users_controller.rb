@@ -24,6 +24,8 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    @posts = Post.where(user: params[:id]).reverse
+    @friends = User.find(params[:id]).friends
   end
 
   def edit

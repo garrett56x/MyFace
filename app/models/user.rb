@@ -1,6 +1,9 @@
 class User < ActiveRecord::Base
 	has_many :posts
 	has_attached_file :profile_pic
+	has_many :invitations
+	has_many :friendships
+	has_many :friends, through: :friendships
 
 	attr_accessor :password, :password_confirmation
 
