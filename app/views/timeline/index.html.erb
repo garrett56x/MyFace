@@ -27,8 +27,18 @@
     		border: none;
     		border-bottom: solid silver 1px;
     	}
+    	.comment_box{
+    		width: 100%;
+    		border: solid silver 1px;
+    		border-radius: 3px;
+    		margin-top: 10px;
+    	}
     	.post_button{
     		height: 30px;
+    		width: 100%;
+    	}
+    	.comment_button{
+    		height: 20px;
     		width: 100%;
     	}
     	.user_pic{
@@ -39,6 +49,14 @@
     	}
     	.post_header{
     		display: inline-block;
+    	}
+    	.comment{
+    		margin-top: 10px;
+    	}
+    	.post{
+    		padding-bottom: 10px;
+    		padding-top: 5px;
+    		border-bottom: solid silver 1px;
     	}
     </style>
 </head>
@@ -91,7 +109,31 @@
 								<% end %>
 							</div>
 						</div>
-						<p><%= post.content %></p>
+						<p class='post'><%= post.content %></p>
+						<% @comments.each do |comment| %>
+							<% if comment.post_id == post.id %>
+								<div class='row comment'>
+									<div class='col-md-1' style='margin-right: 10px'>
+										<%= image_tag comment.user.profile_pic.url , class: "display user_pic" %>
+									</div>
+									<div class='col-md-3'>
+										<p class='post_header'><a href='/users/<%= comment.user.id %>'><%= comment.user.first_name %> <%= comment.user.last_name %></a></p>
+									</div>
+									<div class='col-md-7'>
+										<p><%= comment.comment %></p>
+									</div>
+								</div>
+							<% end %>
+						<% end %>
+						<form action='/comments' method='post'>
+							<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+							<input type='hidden' name='location' value='timeline'>
+							<input type='hidden' name='post_id' value='<%= post.id %>'>
+							<textarea class='comment_box' rows='2' placeholder="Comment" name='comment'></textarea>
+							<div class='comment_button'>
+								<button class='btn btn-primary btn-xs pull-right'>Comment</button>
+							</div>
+						</form>
 					</div>
 				<% end %>
 			</div>

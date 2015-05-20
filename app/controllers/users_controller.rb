@@ -40,6 +40,7 @@ class UsersController < ApplicationController
     @posts = Post.where(id: @allPosts).order(created_at: :desc)
 
     @friends = User.find(params[:id]).friends
+    @comments = Comment.all
   end
 
   def edit

@@ -26,6 +26,7 @@ class TimelineController < ApplicationController
     end
 
     @posts = Post.where(user: @adder).order(created_at: :desc)
+    @comments = Comment.all
   end
 
   def new

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :users, :sessions, :timeline, :posts, :invitations, :friendships
+  resources :users, :sessions, :timeline, :posts, :invitations, :friendships, :comments
   get '/requests' => 'invitations#requests'
   root 'users#index'
 
