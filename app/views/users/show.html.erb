@@ -49,6 +49,7 @@
     		width: 100%;
     	}
     	.comment{
+    		margin-left: 1px;
     		margin-top: 10px;
     	}
     	.post{
@@ -65,6 +66,9 @@
     		border: solid silver 1px;
     		border-radius: 3px;
     		margin-top: 10px;
+    	}
+    	.like{
+    		display: inline-block;
     	}
     </style>
 </head>
@@ -83,8 +87,12 @@
 			<div class='left_column'>
 				<% @friends.each do |friend| %>
 					<p>
-						<%= image_tag friend.profile_pic.url , class: "display user_pic" %>
-						<a href="/users/<%= friend.id %>"><%= friend.first_name %> <%= friend.last_name %></a>
+						<a href="/users/<%= friend.id %>">
+							<%= image_tag friend.profile_pic.url , class: "display user_pic" %>
+						</a>
+						<a href="/users/<%= friend.id %>">
+							<%= friend.first_name %> <%= friend.last_name %>
+						</a>
 					</p>
 				<% end %>
 			</div>
@@ -113,24 +121,100 @@
 					<div class='right_column'>
 						<div class='row'>
 							<div class='col-md-1' style='margin-right: 10px'>
-								<%= image_tag post.user.profile_pic.url , class: "display user_pic" %>
+								<a href="/users/<%= post.user.id %>">
+									<%= image_tag post.user.profile_pic.url , class: "display user_pic" %>
+								</a>
 							</div>
 							<div class='col-md-8'>
-								<h4><a href="/users/<%= post.user.id %>"><%= post.user.first_name %> <%= post.user.last_name %></a></h4>
+								<h4>
+									<a href="/users/<%= post.user.id %>">
+										<%= post.user.first_name %> <%= post.user.last_name %>
+									</a>
+								</h4>
 							</div>
 						</div>
-						<p class='post'><%= post.content %></p>
+						<p><%= post.content %></p>
+						<% if Like.exists?(post_id: post.id, user_id: @user.id) %>
+							<form action='/unlike' method='post' class='like'>
+								<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+								<input type='hidden' name='like_type' value='post'>
+								<input type='hidden' name='post_id' value='<%= post.id %>'>
+								<input type='hidden' name='location' value='profile'>
+								<input type='hidden' name='id' value='<%= @friend.id %>'>
+								<button class='btn btn-warning btn-xs'>Unlike</button>
+							</form>
+						<% else %>
+							<form action='/likes' method='post' class='like'>
+								<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+								<input type='hidden' name='like_type' value='post'>
+								<input type='hidden' name='post_id' value='<%= post.id %>'>
+								<input type='hidden' name='location' value='profile'>
+								<input type='hidden' name='id' value='<%= @friend.id %>'>
+								<button class='btn btn-primary btn-xs'>Like</button>
+							</form>
+						<% end %>
+						<% likeCount = Like.where(post_id: post.id).count %>
+						<% if likeCount == 1 %>
+							<form action='/likes/<%= post.id %>' method='get' class='like'>
+								<input type='hidden' name='like_type' value='post'>
+								<a href="#" onclick="$(this).closest('form').submit()">1 Like</a>
+							</form>
+						<% elsif likeCount > 1 %>
+							<form action='/likes/<%= post.id %>' method='get' class='like'>
+								<input type='hidden' name='like_type' value='post'>
+								<a href="#" onclick="$(this).closest('form').submit()"><%= likeCount %> Likes</a>
+							</form>
+						<% end %>
+						<p class='post'></p>
+
 						<% @comments.each do |comment| %>
 							<% if comment.post_id == post.id %>
 								<div class='row comment'>
 									<div class='col-md-1' style='margin-right: 10px'>
-										<%= image_tag comment.user.profile_pic.url , class: "display user_pic" %>
+										<a href='/users/<%= comment.user.id %>'>
+											<%= image_tag comment.user.profile_pic.url , class: "display user_pic" %>
+										</a>
 									</div>
 									<div class='col-md-3'>
-										<p class='post_header'><a href='/users/<%= comment.user.id %>'><%= comment.user.first_name %> <%= comment.user.last_name %></a></p>
+										<p class='post_header'>
+											<a href='/users/<%= comment.user.id %>'>
+												<%= comment.user.first_name %> <%= comment.user.last_name %>
+											</a>
+										</p>
 									</div>
 									<div class='col-md-7'>
 										<p><%= comment.comment %></p>
+										<% if Like.exists?(comment_id: comment.id, user_id: @user.id) %>
+										<form action='/unlike' method='post' class='like'>
+											<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+											<input type='hidden' name='like_type' value='comment'>
+											<input type='hidden' name='comment_id' value='<%= comment.id %>'>
+											<input type='hidden' name='location' value='profile'>
+											<input type='hidden' name='id' value='<%= @friend.id %>'>
+											<button class='btn btn-warning btn-xs'>Unlike</button>
+										</form>
+										<% else %>
+										<form action='/likes' method='post' class='like'>
+											<input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+											<input type='hidden' name='like_type' value='comment'>
+											<input type='hidden' name='comment_id' value='<%= comment.id %>'>
+											<input type='hidden' name='location' value='profile'>
+											<input type='hidden' name='id' value='<%= @friend.id %>'>
+											<button class='btn btn-primary btn-xs'>Like</button>
+										</form>
+										<% end %>
+										<% likeCount = Like.where(comment_id: comment.id).count %>
+										<% if likeCount == 1 %>
+											<form action='/likes/<%= comment.id %>' method='get' class='like'>
+												<input type='hidden' name='like_type' value='comment'>
+												<a href="#" onclick="$(this).closest('form').submit()">1 Like</a>
+											</form>
+										<% elsif likeCount > 1 %>
+											<form action='/likes/<%= comment.id %>' method='get' class='like'>
+												<input type='hidden' name='like_type' value='comment'>
+												<a href="#" onclick="$(this).closest('form').submit()"><%= likeCount %> Likes</a>
+											</form>
+										<% end %>
 									</div>
 								</div>
 							<% end %>

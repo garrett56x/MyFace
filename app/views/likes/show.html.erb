@@ -1,0 +1,36 @@
+<html>
+<head>
+	<!-- Bootstrap CDN -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <style>
+    	body{
+    		background-color: #E9EAED;
+    	}
+    	.user_pic{
+    		height: 50px;
+    		width: 50px;
+    		border: solid black 1px;
+    		border-radius: 5px;
+    	}
+    </style>
+</head>
+<body>
+	<!-- Navbar Render -->
+	<%= render 'partials/navbar' %>
+	<div class='container'>
+		<h1>People who like this:</h1>
+		<% @likes.each do |like| %>
+			<p>
+				<a href="/users/<%= like.user.id %>">
+					<%= image_tag like.user.profile_pic.url , class: "display user_pic" %>
+				</a>
+				<a href="/users/<%= like.user.id %>">
+					<%= like.user.first_name %> <%= like.user.last_name %>
+				</a>
+			</p>
+		<% end %>
+	</div>
+</body>
+</html>

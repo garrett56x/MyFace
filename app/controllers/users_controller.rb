@@ -8,9 +8,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def new
-  end
-
   def create
     @user = User.new(user_params)
     if @user.save
@@ -41,18 +38,17 @@ class UsersController < ApplicationController
 
     @friends = User.find(params[:id]).friends
     @comments = Comment.all
+    @requestsCount = Invitation.where(invitee:session[:user_id]).count
   end
 
   def edit
     @user = User.find(session[:user_id])
+    @requestsCount = Invitation.where(invitee:session[:user_id]).count
   end
 
   def update
     User.find(session[:user_id]).update(user_params)
     redirect_to '/timeline'
-  end
-
-  def destroy
   end
 
   private

@@ -26,24 +26,8 @@ class TimelineController < ApplicationController
     end
 
     @posts = Post.where(user: @adder).order(created_at: :desc)
+    @friends = User.find(session[:user_id]).friends
     @comments = Comment.all
-  end
-
-  def new
-  end
-
-  def create
-  end
-
-  def show
-  end
-
-  def edit
-  end
-
-  def update
-  end
-
-  def destroy
+    @requestsCount = Invitation.where(invitee:session[:user_id]).count
   end
 end

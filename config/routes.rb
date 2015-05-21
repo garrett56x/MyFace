@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-  resources :users, :sessions, :timeline, :posts, :invitations, :friendships, :comments
+  resources :users, :sessions, :timeline, :posts, :invitations, :friendships, :comments, :likes
+  post '/unlike' => 'likes#unlike'
   get '/requests' => 'invitations#requests'
   root 'users#index'
 
